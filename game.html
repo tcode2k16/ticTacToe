@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Tic-tac-toe</title>
+
+    <style>
+        canvas {
+            display: block;
+            position: absolute;
+            margin: auto;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+    <script>
+
+var
+
+canvas,ctx,
+WIDTH=450,HEIGHT=450,
+
+player,stop=0,
+
+Images = {
+    "O_img": new Image(150,150),
+    "X_img": new Image(150,150),
+},
+
+keys = {
+//    "49": 1,
+//    "50": 2,
+//    "51": 3,
+//    "52": 4,
+//    "53": 5,
+//    "54": 6,
+//    "55": 7,
+//    "56": 8,
+//    "57": 9,
+    "1": 49,
+    "2": 50,
+    "3": 51,
+    "4": 52,
+    "5": 53,
+    "6": 54,
+    "7": 55,
+    "8": 56,
+    "9": 57,
+}
+
+place = {
+    "1": [0,0],
+    "2": [150,0],
+    "3": [300,0],
+    "4": [0,150],
+    "5": [150,150],
+    "6": [300,150],
+    "7": [0,300],
+    "8": [150,300],
+    "9": [300,300],
+},
+
+plate = [0,0,0,
+        0,0,0,
+        0,0,0],
+
+keystate = {};
+
+    function main() {
+        canvas = document.createElement("canvas");
+        canvas.width = WIDTH;
+        canvas.height = HEIGHT;
+        ctx = canvas.getContext("2d");
+        document.body.appendChild(canvas);
+
+
+        document.addEventListener("keydown",function (evt) {
+            keystate[evt.keyCode] = true;
+        });
+        document.addEventListener("keyup",function (evt) {
+            delete keystate[evt.keyCode];
+        });
+
+        init();
+
+        var loop = function () {
+            update();
+            draw();
+
+            window.requestAnimationFrame(loop, canvas);
+        }
+        window.requestAnimationFrame(loop, canvas);
+    }
+
+    function update() {
+        for (var i = 1; i < 10; i++) {
+            if (keystate[keys[i]] && plate[i-1] == 0 && stop==0){
+                if (player == 0) {drawImage(Images.O_img,i);plate[i-1] = 1;};
+                if (player == 1) {drawImage(Images.X_img,i);plate[i-1] = 2;};
+                player = player===0 ? 1 : 0;
+
+            };  
+        };
+            if ((plate[0] == plate[1] && plate[1] == plate[2] && plate[0] != 0) ||
+            (plate[3] == plate[4] && plate[4] == plate[5] && plate[3] != 0) ||
+            (plate[6] == plate[7] && plate[7] == plate[8] && plate[6] != 0) ||
+            (plate[0] == plate[3] && plate[3] == plate[6] && plate[0] != 0) ||
+            (plate[1] == plate[4] && plate[4] == plate[7] && plate[1] != 0) ||
+            (plate[2] == plate[5] && plate[5] == plate[8] && plate[2] != 0) ||
+            (plate[0] == plate[4] && plate[4] == plate[8] && plate[0] != 0) ||
+            (plate[2] == plate[4] && plate[4] == plate[6] && plate[2] != 0)){
+            for (var i = 1; i < 10; i++) {
+                drawImage((player === 1 ? Images.O_img : Images.X_img),i);
+            };
+            stop = 1;
+        }
+    }
+
+    function draw () {
+
+    }
+
+    function init () {
+        player = (Math.floor((Math.random()*10)+1) %2);
+        Images.O_img.src = "res/O.png";
+        Images.X_img.src = "res/X.png";
+
+        ctx.moveTo(150,0);
+        ctx.lineTo(150,HEIGHT);
+        ctx.moveTo(300,0);
+        ctx.lineTo(300,HEIGHT);
+        ctx.moveTo(0,150);
+        ctx.lineTo(WIDTH,150);
+        ctx.moveTo(0,300);
+        ctx.lineTo(WIDTH,300);
+        ctx.stroke();
+    }
+
+    function drawImage (img, num) {
+        ctx.drawImage(img,place[num][0],place[num][1]);
+    }
+
+
+
+    main();
+    </script>
+</body>
+</html>
